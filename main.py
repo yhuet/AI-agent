@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 from google import genai
 import sys
 from google.genai import types
+import argparse
 
 load_dotenv()
 api_key = os.environ.get("GEMINI_API_KEY")
@@ -12,7 +13,15 @@ if len(sys.argv) < 2:
     print("error: missing prompt")
     sys.exit(1)
 
-user_prompt = sys.argv[1]
+parser = argparse.ArgumentParser(description='AI Agent CLI')
+parser.add_argument('prompt', help='The user prompt')
+parser.add_argument('--verbose', action='store_true', help='Enable verbose output')
+
+args = parser.parse_args()
+
+user_prompt = args.prompt
+verbose = args.verbose
+
 messages = [
     types.Content(role="user", parts=[types.Part(text=user_prompt)]),
 ]
@@ -21,5 +30,7 @@ response = client.models.generate_content(
     contents=messages
 )
 print(response.text)
-print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
-print(f"Response tokens: {response.usage_metadata.candidates_token_count }")
+if verbose:
+    print(f"User prompt: {user_prompt}")
+    print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
+    print(f"Response tokens: {response.usage_metadata.candidates_token_count }")
