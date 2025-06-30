@@ -1,11 +1,8 @@
-from functions.get_file_content import get_file_content
-
+from functions.run_python_file import run_python_file
 def main():
-    
-    print(get_file_content("calculator", "main.py"))
-    print(get_file_content("calculator", "pkg/calculator.py"))
-    print(get_file_content("calculator", "/bin/cat")) # (this should return an error string)
-
-
+    print(run_python_file("calculator", "main.py"))
+    print(run_python_file("calculator", "tests.py"))
+    print(run_python_file("calculator", "../main.py")) # (this should return an error)
+    print(run_python_file("calculator", "nonexistent.py")) # (this should return an error)
 if __name__ == "__main__":
     main()
