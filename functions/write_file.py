@@ -12,7 +12,7 @@ def write_file(working_directory, file_path, content):
             dir_name = os.path.dirname(file_path)
             if dir_name:
                 os.makedirs(dir_name)
-        with open(file_path, "w") as file:
+        with open(full_path, "w") as file:
             bytes = file.write(content)
             if bytes:
                 return f'Successfully wrote to "{file_path}" ({len(content)} characters written)'
