@@ -1,3 +1,4 @@
-venv
+.venv
+uv.lock
 .env
 __pycache__
