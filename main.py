@@ -48,6 +48,8 @@ def main():
                 print("final response:")
                 print(final_response)
                 break
+            else:
+                messages.append(types.Content(role="user", parts=[types.Part(text="That did not work, try something else.")]))
         except Exception as e:
             print(f"Error in generate_content: {e}")
 
@@ -73,6 +75,8 @@ def generate_content(client, messages, verbose):
     - Execute Python files with optional arguments
     - Write or overwrite files
 
+    Only make small changes to files in the pkg/ directory.
+
     All paths you provide should be relative to the working directory. You do not need to specify the working directory in your function calls as it is automatically injected for security reasons.
     """
     response = client.models.generate_content(
@@ -87,17 +91,22 @@ def generate_content(client, messages, verbose):
         print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
         print(f"Response tokens: {response.usage_metadata.candidates_token_count }")
 
+    #print("========== CANDIDATES =========")
     if response.candidates:
         for candidate in response.candidates:
+            #print(candidate.content)
             messages.append(candidate.content)
-
+    #print("======== END CANDIDATES =======")
+    
     if not response.function_calls:
         return response.text
 
+    #print("========== FUNCTIONS ==========")
     function_responses = []
     if response.function_calls:
         for function_call_part in response.function_calls:
-            #print(f"Calling function: {function_call_part.name}({function_call_part.args})")
+            if verbose:
+                print(f"Calling function: {function_call_part.name}({function_call_part.args})")
             call_result = call_function(function_call_part)
             if not call_result.parts or not call_result.parts[0].function_response:
                 raise Exception("function call ressult empty")
@@ -109,7 +118,7 @@ def generate_content(client, messages, verbose):
             raise Exception("no function responses generated")
 
         messages.append(types.Content(role="tool", parts=function_responses))
-
+    #print("======== END FUNCTIONS ========")
 
 
 if __name__ == "__main__":
