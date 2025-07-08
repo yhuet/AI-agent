@@ -2,9 +2,7 @@ import os
 from google.genai import types
 
 def write_file(working_directory, file_path, content):
-    ##print((working_directory, file_path))
     full_path = os.path.join(working_directory, file_path)
-    #print(full_path)
     absolute_working_directory = os.path.abspath(working_directory)
     absolute_full_path = os.path.abspath(full_path)
     if not absolute_full_path.startswith(absolute_working_directory):
